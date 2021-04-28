@@ -1,0 +1,42 @@
+/*!
+ * MindPlus
+ * mpython
+ *
+ */
+#include <MPython.h>
+#include <DFRobot_Iot.h>
+// 函数声明
+void whenTopic0Received0();
+void whenTopic0Received1();
+// 静态常量
+const String topics[5] = {"2018324116/萧炜华","","","",""};
+// 创建对象
+DFRobot_Iot myIot;
+
+
+// 主程序开始
+void setup() {
+	mPython.begin();
+	myIot.setMqttCallback(topic_0, "1", whenTopic0Received0);
+	myIot.setMqttCallback(topic_0, "2", whenTopic0Received1);
+	myIot.wifiConnect("Wafer", "22222222");
+	while (!myIot.wifiStatus()) {yield();}
+	display.setCursorLine(1);
+	display.printLine(myIot.getWiFiLocalIP());
+	myIot.init("192.168.43.8","siot","","dfrobot", topics, 1883);
+	myIot.connect();
+	while (!myIot.connected()) {yield();}
+	display.setCursorLine(2);
+	display.printLine("连接成功");
+}
+void loop() {
+
+}
+
+// 事件回调函数
+void whenTopic0Received0() {
+	rgb.write(-1, 0x0000FF);
+}
+void whenTopic0Received1() {
+	rgb.write(-1, 0x000000);
+}
